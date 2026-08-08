@@ -30,9 +30,9 @@ class _StoreCategoryTabState extends State<StoreCategoryTab> {
         : kProducts.where((p) => p['category'] == _selectedCat).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4A40DF),
+        backgroundColor: const Color(0xFF1976FF),
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -155,7 +155,7 @@ class _StoreCategoryTabState extends State<StoreCategoryTab> {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(24),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 3))],
       ),
       child: ListTile(
@@ -163,7 +163,7 @@ class _StoreCategoryTabState extends State<StoreCategoryTab> {
         leading: Container(
           width: 52,
           height: 52,
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
           child: Icon(p['icon'] as IconData, color: color, size: 28),
         ),
         title: Text(p['name'] as String,

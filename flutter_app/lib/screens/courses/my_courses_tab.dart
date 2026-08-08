@@ -11,7 +11,7 @@ class MyCoursesTab extends StatelessWidget {
         'title': 'Junior Automation Engineer',
         'progress': 0.75,
         'image': Icons.auto_awesome_mosaic,
-        'color': const Color(0xFF4A40DF),
+        'color': const Color(0xFF1976FF),
         'lessons': '15/20 Lessons'
       },
       {
@@ -31,25 +31,22 @@ class MyCoursesTab extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120.0,
+            expandedHeight: 104.0,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'My Courses',
-                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
-              ),
-              background: Container(color: Colors.white),
+              title: const Text('My Courses', style: TextStyle(color: Color(0xFF172033), fontWeight: FontWeight.w800)),
+              background: Container(color: const Color(0xFFF8FAFC)),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: const Color(0xFFF8FAFC),
             elevation: 0,
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
             sliver: purchasedCourses.isEmpty
                 ? SliverFillRemaining(
                     child: Center(
@@ -68,7 +65,7 @@ class MyCoursesTab extends StatelessWidget {
                               // Navigate to Tech Courses (handled by parent HomeScreen)
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF4A40DF),
+                              backgroundColor: const Color(0xFF1976FF),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                             child: const Text('Explore Courses', style: TextStyle(color: Colors.white)),
@@ -94,16 +91,16 @@ class MyCoursesTab extends StatelessWidget {
 
   Widget _buildPurchasedCourseCard(Map<String, dynamic> course) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+          color: const Color(0xFF1976FF).withValues(alpha: 0.08),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -114,7 +111,7 @@ class MyCoursesTab extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               color: (course['color'] as Color).withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(18),
             ),
             child: Icon(course['image'] as IconData, color: course['color'] as Color, size: 40),
           ),
@@ -125,7 +122,7 @@ class MyCoursesTab extends StatelessWidget {
               children: [
                 Text(
                   course['title'],
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: Color(0xFF172033)),
                 ),
                 const SizedBox(height: 8),
                 Text(

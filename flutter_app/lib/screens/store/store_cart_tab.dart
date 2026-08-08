@@ -22,9 +22,9 @@ class StoreCartTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4A40DF),
+        backgroundColor: const Color(0xFF1976FF),
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -74,7 +74,7 @@ class StoreCartTab extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           color: Colors.redAccent.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
         ),
         child: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 28),
       ),
@@ -82,7 +82,7 @@ class StoreCartTab extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Padding(
@@ -176,7 +176,7 @@ class StoreCartTab extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onCheckout,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4A40DF),
+                backgroundColor: const Color(0xFF1976FF),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 elevation: 0,
               ),

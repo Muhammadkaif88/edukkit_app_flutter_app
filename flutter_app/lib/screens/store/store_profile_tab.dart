@@ -9,9 +9,9 @@ class StoreProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4A40DF),
+        backgroundColor: const Color(0xFF1976FF),
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -121,7 +121,7 @@ class StoreProfileTab extends StatelessWidget {
   Widget _menuCard({required List<Widget> children}) => Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Column(children: children),

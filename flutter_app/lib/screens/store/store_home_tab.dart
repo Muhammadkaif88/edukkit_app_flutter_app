@@ -66,13 +66,13 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
           // ── App Bar ─────────────────────────────────────────────
           SliverAppBar(
             floating: true,
-            backgroundColor: const Color(0xFF4A40DF),
+            backgroundColor: const Color(0xFF1976FF),
             elevation: 0,
             automaticallyImplyLeading: false,
             leading: IconButton(
@@ -103,8 +103,8 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
           // ── Search ───────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Container(
-              color: const Color(0xFF4A40DF),
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              color: const Color(0xFF1976FF),
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: TextField(
                 onChanged: (v) => setState(() => _searchQuery = v),
                 decoration: InputDecoration(
@@ -114,7 +114,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -126,7 +126,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
           // ── Banner Slider ────────────────────────────────────────
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
               child: Column(
                 children: [
                   SizedBox(
@@ -249,7 +249,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         gradient: LinearGradient(
           colors: [Color(b['color1'] as int), Color(b['color2'] as int)],
           begin: Alignment.topLeft,
@@ -334,7 +334,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 12, offset: const Offset(0, 4)),
         ],
@@ -349,7 +349,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                     color: color.withValues(alpha: 0.1),
                   ),
                   child: Icon(product['icon'] as IconData, color: color, size: 56),
@@ -414,9 +414,9 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                   child: ElevatedButton(
                     onPressed: () => widget.onAddToCart(product),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4A40DF),
+                      backgroundColor: const Color(0xFF1976FF),
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 0,
                     ),
                     child: const Text('Add to Cart', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),

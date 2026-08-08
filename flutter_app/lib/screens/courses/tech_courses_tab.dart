@@ -8,25 +8,25 @@ class TechCoursesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120.0,
+            expandedHeight: 104.0,
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               title: const Text(
                 'Tech Courses',
-                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Color(0xFF172033), fontWeight: FontWeight.w800),
               ),
-              background: Container(color: Colors.white),
+              background: Container(color: const Color(0xFFF8FAFC)),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: const Color(0xFFF8FAFC),
             elevation: 0,
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 _buildCategoryCard(
@@ -34,7 +34,7 @@ class TechCoursesTab extends StatelessWidget {
                   title: "Robotics Courses",
                   subtitle: "Build sensors, controllers, and mechanical parts",
                   icon: Icons.precision_manufacturing,
-                  color: const Color(0xFF4A40DF),
+                  color: const Color(0xFF1976FF),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -42,13 +42,13 @@ class TechCoursesTab extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 _buildCategoryCard(
                   context,
                   title: "AI & IoT Courses",
                   subtitle: "Learn cloud integration and smart logic",
                   icon: Icons.wifi,
-                  color: const Color(0xFF67C275),
+                  color: const Color(0xFF5B5FEF),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -56,13 +56,13 @@ class TechCoursesTab extends StatelessWidget {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 _buildCategoryCard(
                   context,
                   title: "3D Printing & Design",
                   subtitle: "Create physical prototypes and models",
                   icon: Icons.print,
-                  color: const Color(0xFFFCAE3D),
+                  color: const Color(0xFFFFC72C),
                   onTap: () {
                     // Navigate to 3D print screen (if exists)
                   },
@@ -86,15 +86,15 @@ class TechCoursesTab extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha: 0.1),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
+            color: const Color(0xFF1976FF).withValues(alpha: 0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -104,7 +104,7 @@ class TechCoursesTab extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               ),
               child: Icon(icon, color: color, size: 32),
             ),
@@ -117,7 +117,7 @@ class TechCoursesTab extends StatelessWidget {
                     title,
                     style: const TextStyle(
                       fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w800,
                       color: Color(0xFF2D2D2D),
                     ),
                   ),
@@ -132,7 +132,7 @@ class TechCoursesTab extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_rounded, color: color.withValues(alpha: 0.5)),
+            Icon(Icons.arrow_forward_rounded, color: color),
           ],
         ),
       ),

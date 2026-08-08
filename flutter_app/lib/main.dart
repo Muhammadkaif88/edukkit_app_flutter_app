@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'core/core.dart';
 import 'providers/auth_provider.dart';
 import 'providers/search_provider.dart';
 import 'providers/course_provider.dart';
 import 'providers/product_provider.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/main_navigation_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,11 +32,8 @@ class EdukkitApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Edukkit',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Inter', // Assuming Inter or similar is used
-        ),
-        home: const HomeScreen(),
+        theme: AppTheme.lightTheme,
+        home: const MainNavigationScreen(),
       ),
     );
   }

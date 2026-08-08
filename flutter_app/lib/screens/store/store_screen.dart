@@ -35,7 +35,7 @@ class _StoreScreenState extends State<StoreScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('${product['name']} added to cart!'),
-        backgroundColor: const Color(0xFF4A40DF),
+        backgroundColor: const Color(0xFF1976FF),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -110,7 +110,7 @@ class _StoreScreenState extends State<StoreScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: const Color(0xFFF8FAFC),
       body: IndexedStack(
         index: _currentIndex,
         children: tabs,
@@ -133,8 +133,8 @@ class _StoreScreenState extends State<StoreScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
+          color: const Color(0xFF1976FF).withValues(alpha: 0.08),
+          blurRadius: 24,
             offset: const Offset(0, -4),
           ),
         ],
@@ -156,9 +156,9 @@ class _StoreScreenState extends State<StoreScreen> {
                       horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: isActive
-                        ? const Color(0xFF4A40DF).withValues(alpha: 0.1)
+                        ? const Color(0xFF1976FF).withValues(alpha: 0.12)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(18),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -171,7 +171,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                 ? items[i]['active'] as IconData
                                 : items[i]['icon'] as IconData,
                             color: isActive
-                                ? const Color(0xFF4A40DF)
+                                ? const Color(0xFF1976FF)
                                 : Colors.grey,
                             size: 24,
                           ),
@@ -208,7 +208,7 @@ class _StoreScreenState extends State<StoreScreen> {
                               ? FontWeight.bold
                               : FontWeight.normal,
                           color: isActive
-                              ? const Color(0xFF4A40DF)
+                                ? const Color(0xFF1976FF)
                               : Colors.grey,
                         ),
                       ),

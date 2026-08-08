@@ -145,6 +145,28 @@ class CloudflareService {
     }
   }
 
+  /// Update an existing banner
+  Future<bool> updateBanner(String bannerId, Map<String, dynamic> bannerData) async {
+    try {
+      final response = await _dio.put('/banners/$bannerId', data: bannerData);
+      return response.data['success'] == true;
+    } catch (e) {
+      debugPrint("Error updating banner: $e");
+      return false;
+    }
+  }
+
+  /// Delete a banner
+  Future<bool> deleteBanner(String bannerId) async {
+    try {
+      final response = await _dio.delete('/banners/$bannerId');
+      return response.data['success'] == true;
+    } catch (e) {
+      debugPrint("Error deleting banner: $e");
+      return false;
+    }
+  }
+
   /// Fetch all users (Admin only)
   Future<List<dynamic>> getUsers() async {
     try {

@@ -1,0 +1,10 @@
+export 'app_header.dart';
+export 'hero_banner_carousel.dart';
+export 'category_section.dart';
+export 'progress_card.dart';
+export 'featured_courses.dart';
+export 'weekly_challenge.dart';
+export 'offer_banner.dart';
+export 'join_community_banner.dart';
+export 'bottom_spacing.dart';
+export 'ai_floating_mascot.dart';
