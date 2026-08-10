@@ -38,14 +38,14 @@ class EdukkitBottomNavigationBar extends StatelessWidget {
       inactiveIcon: Icons.home_outlined,
     ),
     EdukkitNavItem(
-      label: 'Courses',
-      activeIcon: Icons.auto_stories_rounded,
-      inactiveIcon: Icons.menu_book_rounded,
+      label: 'My Learning',
+      activeIcon: Icons.play_circle_fill_rounded,
+      inactiveIcon: Icons.play_circle_outline_rounded,
     ),
     EdukkitNavItem(
-      label: 'Tech',
-      activeIcon: Icons.laptop_chromebook_rounded,
-      inactiveIcon: Icons.memory_rounded,
+      label: 'Courses',
+      activeIcon: Icons.auto_stories_rounded,
+      inactiveIcon: Icons.auto_stories_outlined,
     ),
     EdukkitNavItem(
       label: 'School',
@@ -62,9 +62,11 @@ class EdukkitBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
+    final effectiveBottomInset = bottomInset > 0 ? bottomInset : 0.0;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 6+ bottomInset),
+    return Container(
+      color: Colors.transparent,
+      padding: EdgeInsets.fromLTRB(18, 0, 18, 14 + effectiveBottomInset),
       child: Container(
         height: 68,
         decoration: BoxDecoration(
@@ -76,13 +78,13 @@ class EdukkitBottomNavigationBar extends StatelessWidget {
           ),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x14000000), // Soft floating 8% shadow
-              blurRadius: 20,
-              offset: Offset(0, 6),
+              color: Color(0x1A000000), // Soft floating shadow
+              blurRadius: 24,
+              offset: Offset(0, 8),
             ),
             BoxShadow(
-              color: Color(0x0A4F46E5), // Subtle indigo ambient glow
-              blurRadius: 10,
+              color: Color(0x0C4F46E5), // Subtle indigo ambient glow
+              blurRadius: 12,
               offset: Offset(0, 2),
             ),
           ],
@@ -123,7 +125,7 @@ class EdukkitBottomNavigationBar extends StatelessWidget {
                           // Icon
                           Icon(
                             isSelected ? item.activeIcon : item.inactiveIcon,
-                            size: 20,
+                            size: 19,
                             color: isSelected
                                 ? const Color(0xFF4F46E5) // Edukkit Indigo Accent
                                 : const Color(0xFF64748B), // Slate 500 Muted
@@ -136,10 +138,11 @@ class EdukkitBottomNavigationBar extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 10.5,
+                              fontSize: 10.0,
                               fontWeight: isSelected
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
+                              letterSpacing: -0.2,
                               color: isSelected
                                   ? const Color(0xFF4F46E5)
                                   : const Color(0xFF64748B),

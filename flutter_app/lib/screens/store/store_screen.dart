@@ -43,9 +43,6 @@ class _StoreScreenState extends State<StoreScreen> {
     );
   }
 
-  int get _cartCount =>
-      _cartItems.fold(0, (sum, i) => sum + (i['qty'] as int));
-
   void _onCheckout() {
     final subtotal = _cartItems.fold(0.0, (s, i) => s + (i['price'] as double) * (i['qty'] as int));
     final delivery = 49.0;
@@ -111,114 +108,10 @@ class _StoreScreenState extends State<StoreScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
         children: tabs,
-      ),
-      bottomNavigationBar: _buildNavBar(),
-    );
-  }
-
-  Widget _buildNavBar() {
-    final items = [
-      {'icon': Icons.home_outlined, 'active': Icons.home_rounded, 'label': 'Home'},
-      {'icon': Icons.grid_view_outlined, 'active': Icons.grid_view_rounded, 'label': 'Category'},
-      {'icon': Icons.receipt_long_outlined, 'active': Icons.receipt_long, 'label': 'Orders'},
-      {'icon': Icons.shopping_cart_outlined, 'active': Icons.shopping_cart_rounded, 'label': 'Cart'},
-      {'icon': Icons.person_outline, 'active': Icons.person, 'label': 'Profile'},
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-          color: const Color(0xFF1976FF).withValues(alpha: 0.08),
-          blurRadius: 24,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (i) {
-              final isActive = _currentIndex == i;
-              final isCart = i == 3;
-              return GestureDetector(
-                onTap: () => setState(() => _currentIndex = i),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? const Color(0xFF1976FF).withValues(alpha: 0.12)
-                        : Colors.transparent,
-                  borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Icon(
-                            isActive
-                                ? items[i]['active'] as IconData
-                                : items[i]['icon'] as IconData,
-                            color: isActive
-                                ? const Color(0xFF1976FF)
-                                : Colors.grey,
-                            size: 24,
-                          ),
-                          if (isCart && _cartCount > 0)
-                            Positioned(
-                              top: -6,
-                              right: -8,
-                              child: Container(
-                                width: 18,
-                                height: 18,
-                                decoration: const BoxDecoration(
-                                  color: Colors.redAccent,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    _cartCount > 9 ? '9+' : '$_cartCount',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        items[i]['label'] as String,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: isActive
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: isActive
-                                ? const Color(0xFF1976FF)
-                              : Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
       ),
     );
   }

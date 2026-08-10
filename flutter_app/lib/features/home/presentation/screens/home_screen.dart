@@ -16,9 +16,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey _communityBannerKey = GlobalKey();
   bool _isCommunityBannerVisible = false;
+  bool _isScrolledDown = false;
 
   bool _onScrollNotification(ScrollNotification notification) {
     if (notification.metrics.axis == Axis.vertical) {
+      final isScrolled = notification.metrics.pixels > 50.0;
+      if (isScrolled != _isScrolledDown) {
+        setState(() {
+          _isScrolledDown = isScrolled;
+        });
+      }
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _checkCommunityBannerVisibility();
       });
@@ -49,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      extendBody: true,
       drawer: const AppDrawer(activeRoute: '/home'),
       body: Stack(
         children: [
@@ -118,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     // 8. Bottom Spacing
                     const SliverToBoxAdapter(
-                      child: BottomSpacing(height: 20.0),
+                      child: BottomSpacing(height: 100.0),
                     ),
                   ],
                 ),
@@ -126,9 +135,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
 
-          // 8. Edukkit AI Floating Assistant Mascot (Hidden smoothly when Community Banner is in viewport)
+          // 8. Edukkit AI Floating Assistant Mascot (Hidden at top initial screen view, appears when scrolled down)
           AiFloatingMascot(
-            isHidden: _isCommunityBannerVisible,
+            isHidden: !_isScrolledDown,
           ),
         ],
       ),

@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../screens/chatbot/chatbot_screen.dart';
 
 /// Edukkit AI Assistant Floating Mascot Widget (Home Screen Only)
-/// Animates the official Edukkit AI Assistant PNG peeking from behind the right screen edge wall.
-/// 
-/// Step 1: Hidden completely outside right edge (right: -240.0)
-/// Step 2: After 2 seconds, slides horizontally (700ms, Curves.easeOutBack)
-/// Step 3: Final position keeps ~40-45% of mascot visible peeking from screen edge (right: -128.0)
-/// Step 4: PNG contains speech bubble, waving hand, & wall grip; no extra elements added
-/// Step 5: Idle breathing animation (Scale 1.00 -> 1.03 -> 1.00 every 2 seconds)
-/// Step 6: Tapping fades out mascot and opens AI Chat Screen (ChatbotScreen)
+/// ---------------------------------------------------------------
+/// 1. Only visible when user is at top screen section (not scrolled down).
+/// 2. Hides smoothly offscreen when scrolling down.
+/// 3. Continuously cycles: Visible on screen for 60 seconds -> Hidden for 30 seconds -> Repeat.
+/// 4. Breathing idle scale animation while visible.
+/// 5. Tapping opens ChatbotScreen.
 class AiFloatingMascot extends StatefulWidget {
   final bool isHidden;
 
@@ -24,16 +22,13 @@ class AiFloatingMascot extends StatefulWidget {
 }
 
 class _AiFloatingMascotState extends State<AiFloatingMascot> with SingleTickerProviderStateMixin {
-  // Session Flag: Intro animation plays once per app session
-  static bool hasSeenAiIntro = false;
-
-  bool _isVisible = false;
+  bool _isCycleVisible = true; // True for 60s show phase, False for 30s hide phase
   bool _isFadingOut = false;
 
   late AnimationController _idleController;
   late Animation<double> _idleScaleAnimation;
 
-  Timer? _delayTimer;
+  Timer? _cycleTimer;
 
   @override
   void initState() {
@@ -48,43 +43,45 @@ class _AiFloatingMascotState extends State<AiFloatingMascot> with SingleTickerPr
       CurvedAnimation(parent: _idleController, curve: Curves.easeInOut),
     );
 
-    if (hasSeenAiIntro) {
-      // Session persistence: Show peeking mascot immediately without 2s delay
-      _isVisible = true;
-      _idleController.repeat(reverse: true);
-    } else {
-      // Step 1 & Step 2: Start hidden outside right edge, slide in after 2 seconds
-      _startIntroSequence();
-    }
+    _idleController.repeat(reverse: true);
+
+    // Start 60s visible -> 30s hidden repeating cycle
+    _startCycleTimer();
   }
 
-  void _startIntroSequence() {
-    _delayTimer = Timer(const Duration(seconds: 2), () {
+  void _startCycleTimer() {
+    _cycleTimer?.cancel();
+    _isCycleVisible = true;
+    // 5 seconds visible phase, then switch to hidden (false)
+    _scheduleNextCyclePhase(const Duration(seconds: 5), false);
+  }
+
+  void _scheduleNextCyclePhase(Duration duration, bool nextVisibleState) {
+    _cycleTimer = Timer(duration, () {
       if (!mounted) return;
       setState(() {
-        _isVisible = true;
+        _isCycleVisible = nextVisibleState;
       });
 
-      // Step 5: Enter subtle breathing idle animation after slide-in completes
-      Future.delayed(const Duration(milliseconds: 750), () {
-        if (!mounted) return;
-        _idleController.repeat(reverse: true);
-        hasSeenAiIntro = true;
-      });
+      if (nextVisibleState) {
+        // Visible phase for 5 seconds -> Next phase hidden (false)
+        _scheduleNextCyclePhase(const Duration(seconds: 5), false);
+      } else {
+        // Hidden phase for 5 seconds -> Next phase visible (true)
+        _scheduleNextCyclePhase(const Duration(seconds: 5), true);
+      }
     });
   }
 
   @override
   void dispose() {
-    _delayTimer?.cancel();
+    _cycleTimer?.cancel();
     _idleController.dispose();
     super.dispose();
   }
 
   void _handleTap() {
     if (_isFadingOut) return;
-
-    hasSeenAiIntro = true;
 
     setState(() {
       _isFadingOut = true;
@@ -98,14 +95,11 @@ class _AiFloatingMascotState extends State<AiFloatingMascot> with SingleTickerPr
         MaterialPageRoute(builder: (context) => const ChatbotScreen()),
       ).then((_) {
         if (!mounted) return;
-        // On return to Home Screen, keep mascot visible peeking from right edge
         setState(() {
           _isFadingOut = false;
-          _isVisible = true;
         });
-        if (!_idleController.isAnimating) {
-          _idleController.repeat(reverse: true);
-        }
+        // Reset 60s visible cycle when returning from chat screen
+        _startCycleTimer();
       });
     });
   }
@@ -113,45 +107,40 @@ class _AiFloatingMascotState extends State<AiFloatingMascot> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     // --------------------------------------------------------------------------
-    // ⚙️ MASCOT POSITION CONFIGURATION (നിങ്ങൾക്ക് വേണമെങ്കിൽ ഇവിടെ മാറ്റങ്ങൾ വരുത്താം)
+    // ⚙️ MASCOT POSITION CONFIGURATION
     // --------------------------------------------------------------------------
-    // 1. Visible Peeking Position (-128.0 = 40-45% visible on screen)
-    //    - കൂട്ടുമ്പോൾ (eg: -100.0) mascot കൂടുതൽ ഉള്ളിലേക്ക് വരും.
-    //    - കുറയ്ക്കുമ്പോൾ (eg: -150.0) mascot കൂടുതൽ പുറത്തേക്ക് പോകും.
-    const double peekingPositionOnScreen = -33.0;
+    // 1. Visible Peeking Position (-33.0)
+    const double peekingPositionOnScreen = -32.0;
 
-    // 2. Offscreen Hidden Position (-240.0 = completely hidden outside right edge)
+    // 2. Offscreen Hidden Position (-240.0)
     const double hiddenPositionOffscreen = -240.0;
 
-    // 3. Current Right Offset
-    final rightOffset = _isVisible ? peekingPositionOnScreen : hiddenPositionOffscreen;
+    // Mascot is visible ONLY if 60s cycle is active AND user is at top screen (!widget.isHidden)
+    final bool shouldBeVisible = _isCycleVisible && !widget.isHidden && !_isFadingOut;
+    final rightOffset = shouldBeVisible ? peekingPositionOnScreen : hiddenPositionOffscreen;
 
     return AnimatedPositioned(
-      // ⏱️ Slide Animation Duration (എത്ര വേഗത്തിൽ വരണം)
       duration: const Duration(milliseconds: 700),
-      // 📈 Slide Animation Curve (Bounce effect)
       curve: Curves.easeOutBack,
       right: rightOffset,
-      // 📏 Bottom Floating Height (Footer/Bottom space height)
-      bottom: 120.0,
+      bottom: 120,
       child: AnimatedOpacity(
-        opacity: (_isFadingOut || widget.isHidden) ? 0.0 : 1.0,
+        opacity: shouldBeVisible ? 1.0 : 0.0,
         duration: const Duration(milliseconds: 300),
         child: IgnorePointer(
-          ignoring: _isFadingOut || widget.isHidden,
+          ignoring: !shouldBeVisible,
           child: GestureDetector(
             onTap: _handleTap,
             behavior: HitTestBehavior.opaque,
             child: ScaleTransition(
               scale: _idleScaleAnimation,
               child: SizedBox(
-                // 📐 Mascot Image Size (Mascot-ന്റെ വലിപ്പം)
                 width: 190,
                 height: 190,
                 child: Image.asset(
                   'assets/mascot/ai_assistant_peek.png',
-                  width: 190,
-                  height: 190,
+                  width: 185,
+                  height: 185,
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) => Image.asset(
                     'assets/mascot/ai_assistant_peeking.png',
@@ -168,3 +157,4 @@ class _AiFloatingMascotState extends State<AiFloatingMascot> with SingleTickerPr
     );
   }
 }
+

@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,8 +47,8 @@ class JoinCommunityModel {
 /// Modular 3-Layer "Join Our Community" Promotional Banner Widget
 /// ---------------------------------------------------------------
 /// LAYER 1: Dynamic Background Image (Admin controllable via BoxFit.cover)
-/// LAYER 2: Text / Badge / CTA Overlay (Center/Right aligned, 90px left space reserved)
-/// LAYER 3: Mascot Overlay Placeholder (Stack clipBehavior: Clip.none for mascot overlay)
+/// LAYER 2: Text / Badge / CTA Overlay (Center/Right aligned, responsive space reserved)
+/// LAYER 3: Mascot Overlay (Popping out left, dynamically scaled & contained within screen bounds)
 class JoinCommunityBanner extends StatelessWidget {
   final JoinCommunityModel? model;
   final VoidCallback? onTap;
@@ -85,116 +86,159 @@ class JoinCommunityBanner extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16.0, top: 20.0),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // MAIN BANNER CONTAINER (329px x 106px)
-            Container(
-              width: 329,
-              height: 106,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x1A4F46E5),
-                    blurRadius: 10,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => _handleTap(context, config),
-                    borderRadius: BorderRadius.circular(16),
-                    child: Stack(
-                      children: [
-                        // LAYER 1: DYNAMIC BACKGROUND IMAGE (OR BRAND GRADIENT FALLBACK)
-                        Positioned.fill(
-                          child: _buildBackgroundImage(config.communityBannerImage),
-                        ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Horizontal padding reserved for screen margins
+        const double horizontalMargin = 16.0;
+        final double maxAvailableWidth = math.max(0.0, constraints.maxWidth - (horizontalMargin * 2));
 
-                        // LAYER 2: SLEEK COMPACT CTA BUTTON OVERLAY
-                        Positioned(
-                          bottom: 5.5,
-                          right: 207,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 3.5,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF4F46E5),
-                                  Color(0xFF6366F1),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x334F46E5),
-                                  blurRadius: 5,
-                                  offset: Offset(0, 1.5),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
+        // Design Reference Specifications
+        const double refBannerWidth = 310.0;
+        const double refBannerHeight = 124.0;
+        const double refMascotOverflow = 65.0; // Left popping-out width
+        const double refTotalWidth = refBannerWidth + refMascotOverflow; // 394.0
+
+        // Scale factor calculation to guarantee zero screen overflow
+        final double scale = (maxAvailableWidth / refTotalWidth).clamp(0.65, 1.0);
+
+        final double bannerWidth = refBannerWidth * scale;
+        final double bannerHeight = refBannerHeight * scale;
+        final double mascotOverflow = refMascotOverflow * scale;
+        final double mascotWidth = 137.0 * scale;
+        final double mascotHeight = 147.0 * scale;
+        final double buttonRight = 204.0 * scale;
+        final double buttonBottom = 5.5 * scale;
+        final double buttonFontSize = (9.0 * scale).clamp(7.5, 10.0);
+        final double buttonIconSize = (10.0 * scale).clamp(8.0, 11.0);
+
+        final double totalEnsembleWidth = mascotOverflow + bannerWidth;
+        final double stackHeight = math.max(bannerHeight, mascotHeight);
+
+        return Padding(
+          padding: const EdgeInsets.only(
+            left: horizontalMargin,
+            right: horizontalMargin,
+            top: 0,
+            bottom: 2.0,
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: totalEnsembleWidth,
+              height: stackHeight,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // MAIN BANNER CONTAINER
+                  Positioned(
+                    left: mascotOverflow,
+                    bottom: 0,
+                    child: Container(
+                      width: bannerWidth,
+                      height: bannerHeight,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16 * scale),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0x1A4F46E5),
+                            blurRadius: 10 * scale,
+                            offset: Offset(0, 3 * scale),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16 * scale),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () => _handleTap(context, config),
+                            borderRadius: BorderRadius.circular(16 * scale),
+                            child: Stack(
                               children: [
-                                Text(
-                                  config.communityBannerButtonText,
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 9.0,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                  ),
+                                // LAYER 1: DYNAMIC BACKGROUND IMAGE (OR BRAND GRADIENT FALLBACK)
+                                Positioned.fill(
+                                  child: _buildBackgroundImage(config.communityBannerImage),
                                 ),
-                                const SizedBox(width: 3),
-                                const Icon(
-                                  Icons.arrow_forward_rounded,
-                                  size: 10,
-                                  color: Colors.white,
+
+                                // LAYER 2: SLEEK COMPACT CTA BUTTON OVERLAY
+                                Positioned(
+                                  bottom: buttonBottom,
+                                  right: buttonRight,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 10 * scale,
+                                      vertical: 3.5 * scale,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF4F46E5),
+                                          Color(0xFF6366F1),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12 * scale),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0x334F46E5),
+                                          blurRadius: 5 * scale,
+                                          offset: Offset(0, 1.5 * scale),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          config.communityBannerButtonText,
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontSize: buttonFontSize,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3 * scale),
+                                        Icon(
+                                          Icons.arrow_forward_rounded,
+                                          size: buttonIconSize,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
 
-            // LAYER 3: MASCOT OVERLAY (POPPING OUT OF THE LEFT EDGE OF THE BANNER)
-            Positioned(
-              left: -70,
-              bottom: 0,
-              child: IgnorePointer(
-                child: SizedBox(
-                  width: 125,
-                  height: 135,
-                  child: Image.asset(
-                    'assets/mascot/community_mascot_leaning.png',
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Image.asset(
-                      'assets/images/community_mascot_leaning.png',
-                      fit: BoxFit.contain,
+                  // LAYER 3: MASCOT OVERLAY (BOUNDED WITHIN STACK BOUNDARIES)
+                  Positioned(
+                    left: -12,
+                    bottom: 0,
+                    child: IgnorePointer(
+                      child: SizedBox(
+                        width: mascotWidth,
+                        height: mascotHeight,
+                        child: Image.asset(
+                          'assets/mascot/community_mascot_leaning.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => Image.asset(
+                            'assets/images/community_mascot_leaning.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -242,3 +286,4 @@ class JoinCommunityBanner extends StatelessWidget {
     );
   }
 }
+

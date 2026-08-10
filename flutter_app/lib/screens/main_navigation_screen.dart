@@ -9,8 +9,8 @@ import '../shared/widgets/widgets.dart';
 /// Root Navigation Shell for Edukkit
 /// Manages tab switching across 5 main destinations:
 /// 0: Home (HomeScreen)
-/// 1: Courses (MyLearningScreen)
-/// 2: Tech (TechCoursesTab)
+/// 1: My Courses (MyLearningScreen - enrolled/purchased courses)
+/// 2: Courses (TechCoursesTab - complete course catalog)
 /// 3: School (SchoolScreen)
 /// 4: Store (StoreScreen)
 class MainNavigationScreen extends StatefulWidget {
@@ -53,6 +53,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,

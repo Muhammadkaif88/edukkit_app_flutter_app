@@ -9,6 +9,7 @@ class TechCoursesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
+      extendBody: true,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -26,7 +27,7 @@ class TechCoursesTab extends StatelessWidget {
             elevation: 0,
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 110),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 _buildCategoryCard(
