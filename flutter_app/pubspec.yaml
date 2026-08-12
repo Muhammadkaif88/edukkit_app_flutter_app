@@ -88,6 +88,13 @@ flutter:
     - assets/images/logo/
     - assets/images/home/
     - assets/images/courses/
+    - assets/images/courses/featured_course_banner_artwork.png
+    - assets/images/courses/senior_robotics_banner.png
+    - assets/images/courses/robotics_masterclass_banner.png
+    - assets/images/home/featured_course_banner_artwork.png
+    - assets/images/home/senior_robotics_banner.png
+    - assets/images/home/robotics_masterclass_banner.png
+    - assets/images/featured_course_banner_artwork.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
