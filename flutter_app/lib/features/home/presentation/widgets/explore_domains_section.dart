@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/domain_model.dart';
+import '../../../../widgets/edukkit_category_icon.dart';
 import '../../../../screens/courses/robotics_courses_screen.dart';
 import '../../../../screens/courses/iot_courses_screen.dart';
 import '../../../../screens/courses/electronics_courses_screen.dart';
@@ -73,13 +74,10 @@ class ExploreDomainsSection extends StatelessWidget {
         final bool isTablet = screenWidth >= 600;
         final bool isSmallMobile = screenWidth < 360;
 
-        // Responsive Sizing (Squircle container 60-64dp)
-        final double circleSize = isTablet ? 64.0 : (isSmallMobile ? 58.0 : 62.0);
+        // Responsive Sizing
         final double iconSize = isTablet ? 32.0 : (isSmallMobile ? 26.0 : 28.0);
-        final double titleFontSize = isTablet ? 13.0 : (isSmallMobile ? 11.0 : 12.0);
         final double sectionTitleSize = isTablet ? 22.0 : (isSmallMobile ? 17.0 : 18.0);
         final double subtitleSize = isTablet ? 14.0 : (isSmallMobile ? 12.0 : 13.0);
-        final double itemWidth = isTablet ? 90.0 : (isSmallMobile ? 74.0 : 80.0);
         final double horizontalPadding = isTablet ? 24.0 : (isSmallMobile ? 12.0 : 16.0);
 
         return Column(
@@ -116,30 +114,23 @@ class ExploreDomainsSection extends StatelessWidget {
 
             const SizedBox(height: 14),
 
-            // 2. CATEGORIES HORIZONTAL SCROLL
-            SizedBox(
-              height: circleSize + 34.0,
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: domainsList.length,
-                separatorBuilder: (context, index) => SizedBox(
-                  width: isTablet ? 16.0 : (isSmallMobile ? 8.0 : 12.0),
-                ),
-                itemBuilder: (context, index) {
-                  final domain = domainsList[index];
-                  return SizedBox(
-                    width: itemWidth,
+            // 2. CATEGORIES ROW (Static & Responsive across all phone screen sizes)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: domainsList.map((domain) {
+                  return Expanded(
                     child: CircularDomainItem(
                       domain: domain,
-                      circleSize: circleSize,
+                      circleSize: isTablet ? 60.0 : 52.0,
                       iconSize: iconSize,
-                      fontSize: titleFontSize,
+                      fontSize: isTablet ? 12.0 : 10.5,
                       onTap: () => _handleDomainTap(context, domain),
                     ),
                   );
-                },
+                }).toList(),
               ),
             ),
           ],
@@ -217,7 +208,12 @@ class _CircularDomainItemState extends State<CircularDomainItem> {
                 onTap: widget.onTap,
                 child: Center(
                   child: domain.image != null && domain.image!.isNotEmpty
-                      ? _buildImage(domain.image!, widget.iconSize)
+                      ? EdukkitCategoryIcon(
+                          iconAsset: domain.image!,
+                          size: widget.circleSize,
+                          iconRatio: 0.88,
+                          shadowColor: domain.color.withValues(alpha: 0.15),
+                        )
                       : Icon(
                           domain.icon ?? Icons.category_rounded,
                           size: widget.iconSize,
@@ -246,33 +242,5 @@ class _CircularDomainItemState extends State<CircularDomainItem> {
         ),
       ],
     );
-  }
-
-  Widget _buildImage(String imagePath, double size) {
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return Image.network(
-        imagePath,
-        width: size,
-        height: size,
-        fit: BoxFit.contain,
-        errorBuilder: (ctx, err, stack) => Icon(
-          widget.domain.icon ?? Icons.category_rounded,
-          size: size,
-          color: widget.domain.color,
-        ),
-      );
-    } else {
-      return Image.asset(
-        imagePath,
-        width: size,
-        height: size,
-        fit: BoxFit.contain,
-        errorBuilder: (ctx, err, stack) => Icon(
-          widget.domain.icon ?? Icons.category_rounded,
-          size: size,
-          color: widget.domain.color,
-        ),
-      );
-    }
   }
 }

@@ -28,56 +28,52 @@ class DomainModel {
         DomainModel(
           id: 'robotics',
           title: 'Robotics',
+          image: 'assets/icons/category_robotics.png',
           icon: Icons.smart_toy_rounded,
           targetRoute: '/courses/robotics',
           displayOrder: 1,
           isActive: true,
-          color: Color(0xFF6366F1), // Indigo
-        ),
-        DomainModel(
-          id: 'ai',
-          title: 'AI & ML',
-          icon: Icons.psychology_rounded,
-          targetRoute: '/courses/ai',
-          displayOrder: 2,
-          isActive: true,
-          color: Color(0xFF8B5CF6), // Purple
+          color: Color(0xFF7C3AED), // Soft Purple / Lavender
         ),
         DomainModel(
           id: 'iot',
           title: 'IoT & Smart',
+          image: 'assets/icons/category_iot.png',
           icon: Icons.sensors_rounded,
           targetRoute: '/courses/iot',
-          displayOrder: 3,
+          displayOrder: 2,
           isActive: true,
-          color: Color(0xFF0EA5E9), // Sky Blue
+          color: Color(0xFF0D9488), // Cyan / Teal
         ),
         DomainModel(
           id: 'electronics',
           title: 'Electronics',
+          image: 'assets/icons/category_electronics.png',
           icon: Icons.memory_rounded,
           targetRoute: '/courses/electronics',
-          displayOrder: 4,
+          displayOrder: 3,
           isActive: true,
-          color: Color(0xFF10B981), // Emerald
+          color: Color(0xFFEA580C), // Orange / Amber
         ),
         DomainModel(
           id: 'diy_kits',
           title: 'DIY Kits',
+          image: 'assets/icons/category_diy_kits.png',
           icon: Icons.build_rounded,
           targetRoute: '/courses/diy-kits',
-          displayOrder: 5,
+          displayOrder: 4,
           isActive: true,
-          color: Color(0xFFF59E0B), // Amber
+          color: Color(0xFF16A34A), // Green
         ),
         DomainModel(
           id: '3d_printing',
           title: '3D Printing',
+          image: 'assets/icons/category_3d_printing.png',
           icon: Icons.view_in_ar_rounded,
           targetRoute: '/courses/3d-printing',
-          displayOrder: 6,
+          displayOrder: 5,
           isActive: true,
-          color: Color(0xFFEC4899), // Pink
+          color: Color(0xFFDB2777), // Pink / Magenta
         ),
       ];
 

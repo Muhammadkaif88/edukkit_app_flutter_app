@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/course_model.dart';
 import 'category_courses_screen.dart';
+import 'all_categories_screen.dart';
+import 'robotics_courses_screen.dart';
+import 'electronics_courses_screen.dart';
+import 'iot_courses_screen.dart';
+import 'diy_kits_courses_screen.dart';
 import 'course_detail_screen.dart';
 import 'data/courses_data.dart';
 import 'widgets/category_chip.dart';
@@ -287,11 +292,16 @@ class _CoursesHomeScreenState extends State<CoursesHomeScreen> {
                 // ── 5. Explore by Category (Grid List / Cards) ──────────
                 _buildSectionHeader(
                   title: 'Explore by Category',
-                  onViewAll: () => _onViewAllTapped('Explore by Category'),
+                  onViewAll: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AllCategoriesScreen(),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
-                  height: 135,
+                  height: 156,
                   child: ListView.separated(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     scrollDirection: Axis.horizontal,
@@ -302,14 +312,29 @@ class _CoursesHomeScreenState extends State<CoursesHomeScreen> {
                       return ExploreCategoryTile(
                         categoryItem: item,
                         onTap: () {
-                          final catName = item.title.contains('IoT') ? 'IoT & Smart Technology' : item.title;
+                          Widget targetScreen;
+                          switch (item.id) {
+                            case 'robotics':
+                              targetScreen = const RoboticsCoursesScreen();
+                              break;
+                            case 'electronics':
+                              targetScreen = const ElectronicsCoursesScreen();
+                              break;
+                            case 'iot':
+                              targetScreen = const IotCoursesScreen();
+                              break;
+                            case 'diy_kits':
+                              targetScreen = const DiyKitsCoursesScreen();
+                              break;
+                            default:
+                              targetScreen = CategoryCoursesScreen(
+                                categoryTitle: item.title,
+                              );
+                              break;
+                          }
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => CategoryCoursesScreen(
-                                categoryTitle: catName,
-                              ),
-                            ),
+                            MaterialPageRoute(builder: (_) => targetScreen),
                           );
                         },
                       );

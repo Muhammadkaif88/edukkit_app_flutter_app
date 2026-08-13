@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/course_model.dart';
-import 'lessons_list_screen.dart';
+import 'course_playlist_screen.dart';
 
 /// A reusable course page. Content is deliberately kept local and data driven
 /// until it is supplied by the Admin/API layer.
@@ -74,7 +74,7 @@ class CourseDetailScreen extends StatelessWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: details.projects.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  separatorBuilder: (_, _) => const SizedBox(width: 12),
                   itemBuilder: (_, index) => _ProjectCard(
                     project: details.projects[index],
                     imagePath: course.assetPath,
@@ -204,7 +204,7 @@ class _Hero extends StatelessWidget {
       borderRadius: BorderRadius.circular(24),
       child: Stack(fit: StackFit.expand, children: [
         if (course.assetPath != null && course.assetPath!.isNotEmpty)
-          Image.asset(course.assetPath!, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const ColoredBox(color: Color(0xFF312E81)))
+          Image.asset(course.assetPath!, fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: Color(0xFF312E81)))
         else const ColoredBox(color: Color(0xFF312E81)),
         const DecoratedBox(decoration: BoxDecoration(gradient: LinearGradient(
           begin: Alignment.centerLeft, end: Alignment.centerRight,
@@ -304,7 +304,7 @@ class _ProjectCard extends StatelessWidget {
       Expanded(
         child: Stack(fit: StackFit.expand, children: [
           if (imagePath != null && imagePath!.isNotEmpty)
-            Image.asset(imagePath!, fit: BoxFit.cover, errorBuilder: (_, __, ___) => _projectFallback())
+            Image.asset(imagePath!, fit: BoxFit.cover, errorBuilder: (_, _, _) => _projectFallback())
           else
             _projectFallback(),
           DecoratedBox(decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.12))),
@@ -374,7 +374,7 @@ class _BottomCta extends StatelessWidget {
       ])),
       const SizedBox(width: 12),
       Expanded(flex: 2, child: SizedBox(height: 52, child: ElevatedButton.icon(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LessonsListScreen(courseTitle: course.title, lessons: details.trialLessons.map((e) => {'title': e}).toList()))),
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CoursePlaylistScreen(course: course))),
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5), foregroundColor: Colors.white, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
         icon: const Icon(Icons.play_arrow_rounded, size: 20), label: Text('Start Free Trial', style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w800)),
       ))),
