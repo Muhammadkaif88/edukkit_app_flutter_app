@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/course_model.dart';
+import '../../../models/featured_course_model.dart';
 import '../../../models/lesson_model.dart';
 
 class CourseCategoryItem {
@@ -89,6 +90,67 @@ class CoursesData {
     ),
   ];
 
+  static final List<FeaturedCourseModel> featuredCourses = [
+    FeaturedCourseModel(
+      id: 'feat_electronics_01',
+      title: 'Basic Electronics for Beginners',
+      category: 'Electronics',
+      description:
+          'Learn electronic components, circuits and practical basics.',
+      imageAsset: 'assets/images/courses/electronics_fundamentals.png',
+      level: 'Beginner',
+      rating: 4.8,
+      lessonCount: 20,
+      kitIncluded: true,
+      isFree: false,
+      price: 599.0,
+      courseRoute: '/course-detail',
+      isFeatured: true,
+      order: 1,
+    ),
+    FeaturedCourseModel(
+      id: 'feat_robotics_01',
+      title: 'Junior Robotics Engineer',
+      category: 'Robotics',
+      description:
+          'Learn sensors, motors, controllers and build real robot projects.',
+      imageAsset: 'assets/images/home/course_robotics_student.png',
+      level: 'Beginner',
+      rating: 4.8,
+      lessonCount: 24,
+      kitIncluded: true,
+      isFree: false,
+      price: 0.0,
+      courseRoute: '/course-detail',
+      isFeatured: true,
+      order: 2,
+    ),
+    FeaturedCourseModel(
+      id: 'feat_iot_01',
+      title: 'IoT & Home Automation',
+      category: 'IoT & Smart Technology',
+      description:
+          'Build smart home projects and connect devices with IoT.',
+      imageAsset: 'assets/images/courses/iot_home_automation.png',
+      level: 'Beginner',
+      rating: 4.7,
+      lessonCount: 22,
+      kitIncluded: true,
+      isFree: false,
+      price: 899.0,
+      courseRoute: '/course-detail',
+      isFeatured: true,
+      order: 3,
+    ),
+  ];
+
+  /// Returns ONLY approved featured courses sorted by order
+  static List<FeaturedCourseModel> getApprovedFeaturedCourses() {
+    final list = featuredCourses.where((c) => c.isFeatured).toList();
+    list.sort((a, b) => a.order.compareTo(b.order));
+    return list;
+  }
+
   static final CourseModel featuredCourse = CourseModel(
     id: 'feat_robotics_01',
     title: 'Junior Robotics Engineer',
@@ -129,6 +191,7 @@ class CoursesData {
       rating: 4.7,
       lessonsCount: 18,
       isKitIncluded: true,
+      isPopular: true,
       badgeText: 'KIT INCLUDED',
       badgeColorHex: 0xFF10B981,
     ),
@@ -148,6 +211,7 @@ class CoursesData {
       level: 'BEGINNER',
       rating: 4.6,
       lessonsCount: 20,
+      isPopular: true,
       badgeText: 'BEGINNER',
       badgeColorHex: 0xFF3B82F6,
     ),
@@ -167,6 +231,7 @@ class CoursesData {
       rating: 4.8,
       lessonsCount: 15,
       isFreePreview: true,
+      isPopular: true,
       badgeText: 'FREE PREVIEW',
       badgeColorHex: 0xFF0D9488,
     ),
@@ -191,6 +256,7 @@ class CoursesData {
       lessonsCount: 30,
       isKitIncluded: true,
       isNew: true,
+      isRecommended: true,
       badgeText: 'NEW',
       badgeColorHex: 0xFF10B981,
     ),
@@ -211,6 +277,7 @@ class CoursesData {
       rating: 4.8,
       lessonsCount: 22,
       isNew: true,
+      isRecommended: false,
       badgeText: 'NEW',
       badgeColorHex: 0xFF10B981,
     ),
@@ -231,10 +298,25 @@ class CoursesData {
       rating: 4.7,
       lessonsCount: 16,
       isNew: true,
+      isRecommended: true,
       badgeText: 'NEW',
       badgeColorHex: 0xFF10B981,
     ),
   ];
+
+  /// Returns ONLY popular courses (isPopular == true)
+  static List<CourseModel> getPopularCourses() {
+    final list = popularCourses.where((c) => c.isPopular).toList();
+    if (list.isEmpty) return popularCourses;
+    return list;
+  }
+
+  /// Returns ONLY new & recommended courses (isNew == true || isRecommended == true)
+  static List<CourseModel> getNewAndRecommendedCourses() {
+    final list = newAndRecommendedCourses.where((c) => c.isNew || c.isRecommended).toList();
+    if (list.isEmpty) return newAndRecommendedCourses;
+    return list;
+  }
 
   /// Returns courses curated specifically for each Category view
   static List<CourseModel> getCoursesByCategory(String categoryName) {

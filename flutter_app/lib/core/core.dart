@@ -7,3 +7,8 @@ export 'theme/app_animation.dart';
 export 'theme/app_theme.dart';
 export 'responsive/responsive.dart';
 export 'constants/asset_constants.dart';
+export 'security/drm_types.dart';
+export 'security/secure_window_manager.dart';
+export 'security/drm_license_service.dart';
+export 'security/offline_learning_manager.dart';
+export 'security/dynamic_watermark_layer.dart';

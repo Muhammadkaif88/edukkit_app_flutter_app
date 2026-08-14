@@ -70,22 +70,14 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
   }
 
   void _playLesson(LessonModel lesson) {
-    final payload = _lessonsList
-        .map((l) => {
-              'title': l.title,
-              'duration': l.duration,
-              'isLocked': l.isLocked,
-              'isFreePreview': l.isFreePreview,
-            })
-        .toList();
-
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => LessonPlayerScreen(
           courseTitle: widget.course.title,
           initialLessonTitle: lesson.title,
-          lessons: payload,
+          lessons: _lessonsList,
+          course: widget.course,
         ),
       ),
     );
@@ -303,12 +295,6 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
     );
   }
 
-  Color _getLevelColor(String level) {
-    final lvl = level.toLowerCase();
-    if (lvl.contains('beg')) return const Color(0xFF10B981); // Green
-    if (lvl.contains('inter')) return const Color(0xFFF59E0B); // Amber
-    return const Color(0xFFEF4444); // Red/Purple for Advanced
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -412,64 +398,6 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
                     )
                   else
                     _buildFallbackBanner(),
-
-                  // Overlaid Hero CTA Button ("Start Learning ▶")
-                  Positioned(
-                    right: 14,
-                    bottom: 14,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          if (_lessonsList.isNotEmpty) {
-                            _playLesson(_lessonsList.first);
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(24),
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(16, 9, 9, 9),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF4F46E5), // Edukkit Primary Indigo
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF4F46E5).withValues(alpha: 0.4),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Start Learning',
-                                style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Container(
-                                width: 26,
-                                height: 26,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.play_arrow_rounded,
-                                  color: Color(0xFF4F46E5),
-                                  size: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -782,48 +710,23 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
                           height: 1.25,
                         ),
                       ),
-                      const SizedBox(height: 5),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 2,
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.ondemand_video_rounded,
-                                size: 12,
-                                color: Color(0xFF4F46E5),
-                              ),
-                              const SizedBox(width: 3),
-                              Text(
-                                lesson.type,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF64748B),
-                                ),
-                              ),
-                            ],
+                          const Icon(
+                            Icons.ondemand_video_rounded,
+                            size: 12,
+                            color: Color(0xFF4F46E5),
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.bar_chart_rounded,
-                                size: 12,
-                                color: _getLevelColor(lesson.level),
-                              ),
-                              const SizedBox(width: 3),
-                              Text(
-                                lesson.level,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF64748B),
-                                ),
-                              ),
-                            ],
+                          const SizedBox(width: 3),
+                          Text(
+                            lesson.type,
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF64748B),
+                            ),
                           ),
                         ],
                       ),
@@ -832,7 +735,7 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
                 ),
                 const SizedBox(width: 4),
 
-                // 4. Right side (Duration badge + Play/Lock button + 3-dots menu)
+                // 4. Right side (Duration badge pill + 3-dots menu)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -852,25 +755,7 @@ class _CoursePlaylistScreenState extends State<CoursePlaylistScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 6),
-
-                    // Play or Lock Circular Button
-                    Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: lesson.isLocked
-                            ? const Color(0xFFF1F5F9) // Muted gray
-                            : const Color(0xFF4F46E5), // Indigo
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        lesson.isLocked ? Icons.lock_rounded : Icons.play_arrow_rounded,
-                        color: lesson.isLocked ? const Color(0xFF94A3B8) : Colors.white,
-                        size: 16,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: 8), // 8–10px gap between duration and 3-dot menu
 
                     // Three Dots Menu
                     InkWell(

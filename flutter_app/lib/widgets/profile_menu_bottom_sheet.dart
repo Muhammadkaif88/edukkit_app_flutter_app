@@ -12,6 +12,7 @@ import '../screens/help/help_support_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/admin/admin_dashboard_screen.dart';
 import '../screens/teacher/teacher_dashboard_screen.dart';
+import '../screens/downloads/offline_learning_screen.dart';
 
 /// Modern Material 3 Profile Menu Bottom Sheet
 /// Replaces the old Hamburger Menu drawer. Accessible directly from the Profile Avatar tap.
@@ -211,16 +212,17 @@ class ProfileMenuBottomSheet extends StatelessWidget {
                     },
                   ),
 
-                  // 4. 📥 Downloads
+                  // 4. 📥 Offline Learning
                   _buildMenuItem(
                     context,
                     icon: Icons.download_for_offline_rounded,
-                    title: 'Downloads',
-                    subtitle: 'Offline Specs & Code Manuals',
+                    title: 'Offline Learning',
+                    subtitle: 'DRM Protected Course Downloads',
                     onTap: () {
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Offline files ready")),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const OfflineLearningScreen()),
                       );
                     },
                   ),

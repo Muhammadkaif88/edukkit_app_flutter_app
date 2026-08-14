@@ -6,18 +6,20 @@ class NewRecommendedCard extends StatelessWidget {
   final CourseModel course;
   final VoidCallback onTap;
   final VoidCallback onToggleBookmark;
+  final double? width;
 
   const NewRecommendedCard({
     super.key,
     required this.course,
     required this.onTap,
     required this.onToggleBookmark,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 220,
+      width: width ?? 220,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
@@ -43,6 +45,7 @@ class NewRecommendedCard extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Top Image Container with NEW Badge & Bookmark
                 Stack(
@@ -161,7 +164,7 @@ class NewRecommendedCard extends StatelessWidget {
                     height: 1.35,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 10),
 
                 // Rating & Lesson Count Row
                 Row(

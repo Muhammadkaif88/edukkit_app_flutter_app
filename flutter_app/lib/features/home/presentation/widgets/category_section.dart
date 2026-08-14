@@ -5,7 +5,8 @@ import '../../../../widgets/edukkit_category_icon.dart';
 import '../../../../screens/courses/robotics_courses_screen.dart';
 import '../../../../screens/courses/iot_courses_screen.dart';
 import '../../../../screens/courses/electronics_courses_screen.dart';
-import '../../../../screens/courses/diy_kits_courses_screen.dart';
+import '../../../../screens/courses/three_d_printing_courses_screen.dart';
+import '../../../../screens/store/diy_kits_screen.dart';
 
 class CategoryItemModel {
   final String id;
@@ -91,7 +92,12 @@ class CategorySection extends StatelessWidget {
         targetScreen = const ElectronicsCoursesScreen();
         break;
       case 'diy_kits':
-        targetScreen = const DiyKitsCoursesScreen();
+      case 'diy-kits':
+        targetScreen = const DiyKitsScreen();
+        break;
+      case '3d_printing':
+      case '3d-printing':
+        targetScreen = const ThreeDPrintingCoursesScreen();
         break;
       default:
         targetScreen = null;

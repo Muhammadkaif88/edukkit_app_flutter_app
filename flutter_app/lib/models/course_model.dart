@@ -16,6 +16,8 @@ class CourseModel {
   final bool isKitIncluded;
   final bool isNew;
   final bool isPopular;
+  final bool isRecommended;
+  final bool isFeatured;
   final String? badgeText;
   final int? badgeColorHex;
   final bool isBookmarked;
@@ -38,6 +40,8 @@ class CourseModel {
     this.isKitIncluded = false,
     this.isNew = false,
     this.isPopular = false,
+    this.isRecommended = false,
+    this.isFeatured = false,
     this.badgeText,
     this.badgeColorHex,
     this.isBookmarked = false,
@@ -61,6 +65,8 @@ class CourseModel {
     bool? isKitIncluded,
     bool? isNew,
     bool? isPopular,
+    bool? isRecommended,
+    bool? isFeatured,
     String? badgeText,
     int? badgeColorHex,
     bool? isBookmarked,
@@ -83,6 +89,8 @@ class CourseModel {
       isKitIncluded: isKitIncluded ?? this.isKitIncluded,
       isNew: isNew ?? this.isNew,
       isPopular: isPopular ?? this.isPopular,
+      isRecommended: isRecommended ?? this.isRecommended,
+      isFeatured: isFeatured ?? this.isFeatured,
       badgeText: badgeText ?? this.badgeText,
       badgeColorHex: badgeColorHex ?? this.badgeColorHex,
       isBookmarked: isBookmarked ?? this.isBookmarked,
@@ -108,6 +116,8 @@ class CourseModel {
       isKitIncluded: json['is_kit_included'] ?? false,
       isNew: json['is_new'] ?? false,
       isPopular: json['is_popular'] ?? false,
+      isRecommended: json['is_recommended'] ?? false,
+      isFeatured: json['is_featured'] ?? false,
       badgeText: json['badge_text'],
       badgeColorHex: json['badge_color_hex'],
       isBookmarked: json['is_bookmarked'] ?? false,

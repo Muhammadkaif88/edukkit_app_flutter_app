@@ -6,12 +6,14 @@ class PopularCourseCard extends StatelessWidget {
   final CourseModel course;
   final VoidCallback onTap;
   final VoidCallback onToggleBookmark;
+  final double? width;
 
   const PopularCourseCard({
     super.key,
     required this.course,
     required this.onTap,
     required this.onToggleBookmark,
+    this.width,
   });
 
   @override
@@ -19,7 +21,7 @@ class PopularCourseCard extends StatelessWidget {
     final badgeColor = Color(course.badgeColorHex ?? 0xFF10B981);
 
     return Container(
-      width: 228,
+      width: width ?? 228,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
@@ -45,6 +47,7 @@ class PopularCourseCard extends StatelessWidget {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Top Image / Graphic Container with Badge & Bookmark
                 Stack(
@@ -164,7 +167,7 @@ class PopularCourseCard extends StatelessWidget {
                     height: 1.35,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(height: 10),
 
                 // Rating & Lesson Count Row
                 Row(

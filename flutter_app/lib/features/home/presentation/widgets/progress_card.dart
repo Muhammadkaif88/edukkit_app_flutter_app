@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/core.dart';
 import '../../../../shared/shared.dart';
+import '../../../../screens/store/diy_kits_screen.dart';
 
 /// Data Architecture for Admin Panel management of the FREE DIY Videos Promo Card
 class FreeDiyCardModel {
@@ -74,10 +75,10 @@ class ProgressCard extends StatelessWidget {
     if (onCtaTap != null) {
       onCtaTap!();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Navigating to Free DIY Videos...'),
-          duration: Duration(seconds: 2),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const DiyKitsScreen(),
         ),
       );
     }

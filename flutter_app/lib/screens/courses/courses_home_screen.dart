@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/course_model.dart';
 import 'category_courses_screen.dart';
+import 'featured_courses_screen.dart';
+import 'popular_courses_screen.dart';
+import 'new_recommended_courses_screen.dart';
 import 'all_categories_screen.dart';
 import 'robotics_courses_screen.dart';
 import 'electronics_courses_screen.dart';
 import 'iot_courses_screen.dart';
 import 'diy_kits_courses_screen.dart';
+import 'three_d_printing_courses_screen.dart';
 import 'course_detail_screen.dart';
 import 'data/courses_data.dart';
 import 'widgets/category_chip.dart';
@@ -57,6 +61,33 @@ class _CoursesHomeScreenState extends State<CoursesHomeScreen> {
   }
 
   void _onViewAllTapped(String sectionName) {
+    if (sectionName == 'Featured Course' || sectionName == 'Featured Courses') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const FeaturedCoursesScreen(),
+        ),
+      );
+      return;
+    }
+    if (sectionName == 'Popular Courses' || sectionName == 'Popular Course') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const PopularCoursesScreen(),
+        ),
+      );
+      return;
+    }
+    if (sectionName == 'New & Recommended') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const NewRecommendedCoursesScreen(),
+        ),
+      );
+      return;
+    }
     final cat = (_selectedCategory == 'All') ? 'Robotics' : _selectedCategory;
     Navigator.push(
       context,
@@ -325,6 +356,10 @@ class _CoursesHomeScreenState extends State<CoursesHomeScreen> {
                               break;
                             case 'diy_kits':
                               targetScreen = const DiyKitsCoursesScreen();
+                              break;
+                            case '3d_printing':
+                            case '3d-printing':
+                              targetScreen = const ThreeDPrintingCoursesScreen();
                               break;
                             default:
                               targetScreen = CategoryCoursesScreen(

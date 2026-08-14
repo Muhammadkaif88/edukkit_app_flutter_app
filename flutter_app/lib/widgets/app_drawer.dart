@@ -12,6 +12,7 @@ import '../screens/help/help_support_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/admin/admin_dashboard_screen.dart';
 import '../screens/teacher/teacher_dashboard_screen.dart';
+import '../screens/downloads/offline_learning_screen.dart';
 
 /// Production-Ready Premium Material 3 Left Side Navigation Drawer for Edukkit
 /// Width: 82% of screen width (Max 340dp on Tablets)
@@ -209,15 +210,16 @@ class AppDrawer extends StatelessWidget {
                       },
                     ),
 
-                    // 4. Downloads
+                    // 4. Offline Learning
                     _DrawerTile(
                       icon: Icons.download_for_offline_rounded,
-                      label: 'Downloads',
-                      isSelected: activeRoute == '/downloads',
+                      label: 'Offline Learning',
+                      isSelected: activeRoute == '/offline-learning' || activeRoute == '/downloads',
                       onTap: () {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Offline resources ready")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const OfflineLearningScreen()),
                         );
                       },
                     ),

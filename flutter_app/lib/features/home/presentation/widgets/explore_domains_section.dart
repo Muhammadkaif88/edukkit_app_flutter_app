@@ -5,7 +5,9 @@ import '../../../../widgets/edukkit_category_icon.dart';
 import '../../../../screens/courses/robotics_courses_screen.dart';
 import '../../../../screens/courses/iot_courses_screen.dart';
 import '../../../../screens/courses/electronics_courses_screen.dart';
-import '../../../../screens/courses/diy_kits_courses_screen.dart';
+import '../../../../screens/courses/three_d_printing_courses_screen.dart';
+import '../../../../screens/courses/category_courses_screen.dart';
+import '../../../../screens/store/diy_kits_screen.dart';
 
 /// Module 3 (LOCKED) – Production-Ready Explore Domains Section for Edukkit
 /// Squircle Rounded Category Container Layout matching exact design screenshot.
@@ -26,7 +28,7 @@ class ExploreDomainsSection extends StatelessWidget {
       return;
     }
 
-    Widget? targetScreen;
+    Widget targetScreen;
     switch (domain.targetRoute) {
       case '/courses/robotics':
         targetScreen = const RoboticsCoursesScreen();
@@ -38,26 +40,22 @@ class ExploreDomainsSection extends StatelessWidget {
         targetScreen = const ElectronicsCoursesScreen();
         break;
       case '/courses/diy-kits':
-        targetScreen = const DiyKitsCoursesScreen();
+      case '/courses/diy_kits':
+        targetScreen = const DiyKitsScreen();
+        break;
+      case '/courses/3d-printing':
+      case '/courses/3d_printing':
+        targetScreen = const ThreeDPrintingCoursesScreen();
         break;
       default:
-        targetScreen = null;
+        targetScreen = CategoryCoursesScreen(categoryTitle: domain.title);
         break;
     }
 
-    if (targetScreen != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => targetScreen!),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${domain.title} courses coming soon!'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => targetScreen),
+    );
   }
 
   @override

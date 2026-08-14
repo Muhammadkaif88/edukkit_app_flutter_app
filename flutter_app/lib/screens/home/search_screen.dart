@@ -87,7 +87,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.tune_rounded, color: Color(0xFF0F172A), size: 22),
+                  onPressed: () => _showFilterMenu(context),
+                ),
               ],
             ),
           ),

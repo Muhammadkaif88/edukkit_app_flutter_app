@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/core.dart';
+import '../../../../screens/courses/featured_courses_screen.dart';
+import '../../../../screens/courses/course_detail_screen.dart';
+import '../../../../screens/courses/data/courses_data.dart';
 
 /// Data Model for Featured Courses (Admin Panel & Backend Ready)
 class CourseModel {
@@ -33,8 +36,8 @@ class CourseModel {
       title: json['title'] ?? '',
       subtitle: json['subtitle'] ?? '',
       image: json['image'] ?? '',
-      rating: (json['rating'] as num?)?.toDouble() ?? 4.8,
-      totalLessons: json['totalLessons'] ?? 20,
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      totalLessons: json['totalLessons'] ?? 0,
       displayOrder: json['displayOrder'] ?? 0,
       isActive: json['isActive'] ?? true,
       targetRoute: json['targetRoute'] ?? '/course-details',
@@ -107,10 +110,10 @@ class FeaturedCourses extends StatelessWidget {
     if (onCourseTap != null) {
       onCourseTap!(course);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Opening ${course.title}...'),
-          duration: const Duration(seconds: 2),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => CourseDetailScreen(course: CoursesData.featuredCourse),
         ),
       );
     }
@@ -120,10 +123,10 @@ class FeaturedCourses extends StatelessWidget {
     if (onSeeAllTap != null) {
       onSeeAllTap!();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Opening Courses Catalog...'),
-          duration: Duration(seconds: 2),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const FeaturedCoursesScreen(),
         ),
       );
     }
