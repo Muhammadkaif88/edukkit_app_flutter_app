@@ -51,7 +51,8 @@ export const OrdersPage: React.FC = () => {
   const [totalOrders, setTotalOrders] = useState(0);
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>('all');
   const [page, setPage] = useState(1);
@@ -68,6 +69,17 @@ export const OrdersPage: React.FC = () => {
   const [pendingNextStatus, setPendingNextStatus] = useState<OrderStatus | null>(null);
   const [trackingNumberInput, setTrackingNumberInput] = useState('');
 
+  // Debounce search input into activeSearch
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput.trim() !== activeSearch.trim()) {
+        setActiveSearch(searchInput.trim());
+        setPage(1);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
   const loadOrders = async () => {
     setLoading(true);
     try {
@@ -77,8 +89,9 @@ export const OrdersPage: React.FC = () => {
       };
       if (selectedStatus !== 'all') params.order_status = selectedStatus;
       if (selectedPaymentStatus !== 'all') params.payment_status = selectedPaymentStatus;
-      if (search.trim()) params.search = search.trim();
+      if (activeSearch.trim()) params.search = activeSearch.trim();
 
+      console.log('[OrdersPage] Fetching orders with params:', params);
       const data = await fetchAdminOrders(params);
       setOrders(data.orders || []);
       setTotalOrders(data.total || 0);
@@ -86,6 +99,7 @@ export const OrdersPage: React.FC = () => {
         setSummary(data.summary);
       }
     } catch (err: any) {
+      console.error('[OrdersPage] Error loading orders:', err);
       toast.error('Failed to load orders', err?.message);
     } finally {
       setLoading(false);
@@ -93,11 +107,20 @@ export const OrdersPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      loadOrders();
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [page, selectedStatus, selectedPaymentStatus, search]);
+    loadOrders();
+  }, [page, selectedStatus, selectedPaymentStatus, activeSearch]);
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setActiveSearch(searchInput.trim());
+    setPage(1);
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    setActiveSearch('');
+    setPage(1);
+  };
 
   const copyToClipboard = (text: string, label: string = 'Text') => {
     navigator.clipboard.writeText(text);
@@ -340,19 +363,34 @@ export const OrdersPage: React.FC = () => {
 
       {/* Search & Multifaceted Status Filters */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3">
-        <div className="flex flex-col sm:flex-row items-center gap-3">
-          <div className="relative flex-1 w-full">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative flex-1 w-full flex items-center">
+            <Search size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
             <input
               type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              placeholder="Search by Order ID, customer name, email, or phone..."
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search by Order ID, Cashfree reference, customer name, email, or phone..."
+              className="w-full pl-9 pr-24 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
+            <div className="absolute right-2 flex items-center gap-1.5">
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
+                  title="Clear Search"
+                >
+                  <XCircle size={14} />
+                </button>
+              )}
+              <button
+                type="submit"
+                className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+              >
+                Search
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
@@ -390,7 +428,7 @@ export const OrdersPage: React.FC = () => {
               <option value="PAYMENT_FAILED">Payment Failed</option>
             </select>
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Orders Table */}
@@ -402,7 +440,7 @@ export const OrdersPage: React.FC = () => {
             icon={ShoppingBag}
             title="No orders found"
             description={
-              search || selectedStatus !== 'all' || selectedPaymentStatus !== 'all'
+              activeSearch || selectedStatus !== 'all' || selectedPaymentStatus !== 'all'
                 ? 'No customer orders matched your active filters.'
                 : 'No store purchases or course orders have been placed yet.'
             }
