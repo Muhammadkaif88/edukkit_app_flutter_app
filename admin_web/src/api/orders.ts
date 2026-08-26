@@ -9,11 +9,23 @@ export interface GetOrdersParams {
   offset?: number;
 }
 
+export interface OrdersSummary {
+  total_orders: number;
+  paid_orders: number;
+  total_revenue: number;
+  processing_orders: number;
+  shipped_orders: number;
+  delivered_orders: number;
+  cancelled_orders: number;
+  pending_payment_orders: number;
+}
+
 export interface OrdersResponse {
   total: number;
   limit: number;
   offset: number;
   orders: Order[];
+  summary?: OrdersSummary;
 }
 
 export async function fetchAdminOrders(params?: GetOrdersParams): Promise<OrdersResponse> {

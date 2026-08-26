@@ -49,6 +49,7 @@ export const OrdersPage: React.FC = () => {
   const toast = useToast();
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
@@ -81,6 +82,9 @@ export const OrdersPage: React.FC = () => {
       const data = await fetchAdminOrders(params);
       setOrders(data.orders || []);
       setTotalOrders(data.total || 0);
+      if (data.summary) {
+        setSummary(data.summary);
+      }
     } catch (err: any) {
       toast.error('Failed to load orders', err?.message);
     } finally {
@@ -101,9 +105,21 @@ export const OrdersPage: React.FC = () => {
   };
 
   // --------------------------------------------------------------------------
-  // KPI CALCULATIONS (Dynamic from loaded list & total)
+  // KPI CALCULATIONS (Authoritative database-wide aggregates)
   // --------------------------------------------------------------------------
   const orderMetrics = useMemo(() => {
+    if (summary) {
+      return {
+        total: summary.total_orders,
+        paidCount: summary.paid_orders,
+        processingCount: summary.processing_orders,
+        shippedCount: summary.shipped_orders,
+        deliveredCount: summary.delivered_orders,
+        cancelledCount: summary.cancelled_orders,
+        revenue: summary.total_revenue,
+        pendingPaymentCount: summary.pending_payment_orders,
+      };
+    }
     const total = totalOrders || orders.length;
     const paidCount = orders.filter((o) => o.order_status === 'PAID' || o.payment_status === 'PAYMENT_SUCCESS').length;
     const processingCount = orders.filter((o) => o.order_status === 'PROCESSING' || o.order_status === 'PACKED').length;
@@ -114,22 +130,8 @@ export const OrdersPage: React.FC = () => {
       .filter((o) => o.payment_status === 'PAYMENT_SUCCESS')
       .reduce((sum, o) => sum + (o.total_payable || 0), 0);
 
-    return { total, paidCount, processingCount, shippedCount, deliveredCount, cancelledCount, revenue };
-  }, [orders, totalOrders]);
-
-  // Filtered orders matching search query
-  const filteredOrders = useMemo(() => {
-    if (!search.trim()) return orders;
-    const query = search.toLowerCase();
-    return orders.filter((o) => {
-      const matchId = o.id.toLowerCase().includes(query);
-      const matchName = (o.customer_name || '').toLowerCase().includes(query);
-      const matchEmail = (o.customer_email || '').toLowerCase().includes(query);
-      const matchPhone = (o.customer_phone || '').toLowerCase().includes(query);
-      const matchTrk = (o.tracking_number || '').toLowerCase().includes(query);
-      return matchId || matchName || matchEmail || matchPhone || matchTrk;
-    });
-  }, [orders, search]);
+    return { total, paidCount, processingCount, shippedCount, deliveredCount, cancelledCount, revenue, pendingPaymentCount: 0 };
+  }, [orders, totalOrders, summary]);
 
   // --------------------------------------------------------------------------
   // ORDER DETAILS INSPECTOR
@@ -344,7 +346,10 @@ export const OrdersPage: React.FC = () => {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search by Order ID, customer name, email, or phone..."
               className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
@@ -392,7 +397,7 @@ export const OrdersPage: React.FC = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
         {loading ? (
           <TableSkeleton rows={6} />
-        ) : filteredOrders.length === 0 ? (
+        ) : orders.length === 0 ? (
           <EmptyState
             icon={ShoppingBag}
             title="No orders found"
@@ -404,7 +409,7 @@ export const OrdersPage: React.FC = () => {
           />
         ) : (
           <div className="divide-y divide-slate-100">
-            {filteredOrders.map((order) => (
+            {orders.map((order) => (
               <div
                 key={order.id}
                 className="p-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/75 transition-colors"
