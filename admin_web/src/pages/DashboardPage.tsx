@@ -26,14 +26,21 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [statsError, setStatsError] = useState<{ status: number; message: string } | null>(null);
 
-  const loadStats = async () => {
+  const loadStats = async (attempt = 1) => {
     setLoading(true);
     setStatsError(null);
     try {
       const data = await fetchAdminStats();
       setStats(data);
     } catch (err) {
-      console.error('Failed to load admin stats:', err);
+      console.error(`[Dashboard] Failed to load admin stats (attempt ${attempt}):`, err);
+      const isNetworkError = !(err instanceof ApiError);
+      // Auto-retry up to 3 times for transient network errors (Render free tier spin-up)
+      if (isNetworkError && attempt < 3) {
+        console.warn(`[Dashboard] Network error — retrying in 3s (attempt ${attempt}/3)...`);
+        setTimeout(() => loadStats(attempt + 1), 3000);
+        return;
+      }
       if (err instanceof ApiError) {
         setStatsError({ status: err.status, message: err.message });
       } else {
@@ -58,7 +65,7 @@ export const DashboardPage: React.FC = () => {
         breadcrumbs={[{ label: 'Admin', href: '/' }, { label: 'Overview' }]}
         action={
           <button
-            onClick={loadStats}
+            onClick={() => loadStats()}
             className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-2xs flex items-center gap-2 transition-colors cursor-pointer"
           >
             <RefreshCw size={14} className="text-slate-500" />
@@ -77,12 +84,22 @@ export const DashboardPage: React.FC = () => {
                 ? 'Authentication Required — Sign in with a real Firebase account to view live stats.'
                 : statsError.status === 403
                 ? 'Access Denied — Your account does not have administrator privileges on the backend.'
-                : `Backend Error (HTTP ${statsError.status || 'Network'}) — Stats could not be loaded.`}
+                : statsError.status === 0
+                ? 'Network Error — Could not reach the backend. The Render free-tier service may be waking up (can take ~50s). Retrying automatically…'
+                : `Backend Error (HTTP ${statsError.status}) — Stats could not be loaded.`}
             </p>
             <p className="text-xs mt-1 font-mono text-rose-600 break-all">{statsError.message}</p>
-            <p className="text-xs mt-1 text-rose-500">
-              Target: <span className="font-mono">{BASE_URL}/api/admin/stats</span>
-            </p>
+            <div className="flex items-center gap-3 mt-2">
+              <p className="text-xs text-rose-500">
+                Target: <span className="font-mono">{BASE_URL}/api/admin/stats</span>
+              </p>
+              <button
+                onClick={() => loadStats()}
+                className="text-xs font-bold text-rose-700 hover:text-rose-900 underline flex items-center gap-1"
+              >
+                <RefreshCw size={11} /> Retry Now
+              </button>
+            </div>
           </div>
         </div>
       )}

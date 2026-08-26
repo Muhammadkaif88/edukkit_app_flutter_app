@@ -76,10 +76,27 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const response = await fetch(url, {
-    ...restOptions,
-    headers,
-  });
+  // DIAGNOSTIC: log URL and auth header presence (not the token itself)
+  const hasAuth = headers.has('Authorization');
+  console.log(`[apiClient] → ${options.method || 'GET'} ${url}`);
+  console.log(`[apiClient]   Authorization header present: ${hasAuth}`);
+  console.log(`[apiClient]   Dev token active: ${!!activeDevToken}`);
+  console.log(`[apiClient]   Token provider set: ${!!tokenProvider}`);
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...restOptions,
+      headers,
+    });
+  } catch (fetchErr: any) {
+    console.error(`[apiClient] ✗ fetch() threw:`, fetchErr?.name, fetchErr?.message);
+    console.error(`[apiClient]   URL was: ${url}`);
+    console.error(`[apiClient]   This is a network/CORS/browser-level failure (no HTTP response).`);
+    throw fetchErr;
+  }
+  console.log(`[apiClient] ← ${response.status} ${response.statusText} for ${url}`);
+
 
   if (!response.ok) {
     let errorData: any = null;
