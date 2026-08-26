@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   fetchAdminOrders,
   fetchAdminOrderDetail,
@@ -56,6 +56,7 @@ export const OrdersPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>('all');
   const [page, setPage] = useState(1);
+  const [refreshToken, setRefreshToken] = useState(0);
   const pageSize = 20;
 
   // Order Details Modal State
@@ -80,47 +81,59 @@ export const OrdersPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  const loadOrders = async () => {
-    setLoading(true);
-    try {
-      const params: any = {
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-      };
-      if (selectedStatus !== 'all') params.order_status = selectedStatus;
-      if (selectedPaymentStatus !== 'all') params.payment_status = selectedPaymentStatus;
-      if (activeSearch.trim()) params.search = activeSearch.trim();
-
-      console.log('[OrdersPage] Fetching orders with params:', params);
-      const data = await fetchAdminOrders(params);
-      setOrders(data.orders || []);
-      setTotalOrders(data.total || 0);
-      if (data.summary) {
-        setSummary(data.summary);
-      }
-    } catch (err: any) {
-      console.error('[OrdersPage] Error loading orders:', err);
-      toast.error('Failed to load orders', err?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Main fetch effect: runs whenever any filter/pagination/search state changes.
+  // The async function is defined INSIDE the effect so it always closes over
+  // the current render's values — no stale-closure risk.
   useEffect(() => {
-    loadOrders();
-  }, [page, selectedStatus, selectedPaymentStatus, activeSearch]);
+    let cancelled = false;
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
+    const doFetch = async () => {
+      setLoading(true);
+      try {
+        const params: any = {
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
+        };
+        if (selectedStatus !== 'all') params.order_status = selectedStatus;
+        if (selectedPaymentStatus !== 'all') params.payment_status = selectedPaymentStatus;
+        if (activeSearch.trim()) params.search = activeSearch.trim();
+
+        console.log('[OrdersPage] Fetching orders with params:', params);
+        const data = await fetchAdminOrders(params);
+        if (cancelled) return;
+        setOrders(data.orders || []);
+        setTotalOrders(data.total || 0);
+        if (data.summary) {
+          setSummary(data.summary);
+        }
+      } catch (err: any) {
+        if (cancelled) return;
+        console.error('[OrdersPage] Error loading orders:', err?.name, err?.message);
+        toast.error('Failed to load orders', err?.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    doFetch();
+    return () => { cancelled = true; };
+  }, [page, selectedStatus, selectedPaymentStatus, activeSearch, refreshToken]);
+
+  const handleSearchSubmit = useCallback((e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setActiveSearch(searchInput.trim());
     setPage(1);
-  };
+  }, [searchInput]);
 
-  const handleClearSearch = () => {
+  const handleClearSearch = useCallback(() => {
     setSearchInput('');
     setActiveSearch('');
     setPage(1);
-  };
+  }, []);
+
+  const handleRefresh = useCallback(() => {
+    setRefreshToken((t) => t + 1);
+  }, []);
 
   const copyToClipboard = (text: string, label: string = 'Text') => {
     navigator.clipboard.writeText(text);
@@ -318,7 +331,7 @@ export const OrdersPage: React.FC = () => {
         action={
           <div className="flex items-center gap-2.5">
             <button
-              onClick={loadOrders}
+              onClick={handleRefresh}
               className="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-slate-600 hover:text-slate-900 transition-colors shadow-2xs cursor-pointer"
               title="Refresh Orders"
             >
